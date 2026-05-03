@@ -1,0 +1,25 @@
+{
+    "name": "rodmarzavala/infile-php-wordpress",
+    "description": "WordPress plugin adapter for infile-php — Guatemala FEL SDK",
+    "type": "wordpress-plugin",
+    "license": "MIT",
+    "require": {
+        "php": ">=7.4",
+        "rodmarzavala/infile-php-core": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "InfilePhp\\WordPress\\": "includes/"
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "repositories": [{
+        "name": "core",
+        "type": "path",
+        "url": "../core",
+        "options": {
+            "symlink": false
+        }
+    }]
+}
