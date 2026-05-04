@@ -101,17 +101,17 @@ class OrderInvoiceHook
                 );
             }
 
-            $invoice->issue();
+            $response = $invoice->issue();
 
-            $order->update_meta_data('_fel_uuid', $invoice->getUuid());
-            $order->update_meta_data('_fel_serie', $invoice->getSerie());
-            $order->update_meta_data('_fel_numero', $invoice->getNumero());
+            $order->update_meta_data('_fel_uuid', $response->uuid);
+            $order->update_meta_data('_fel_serie', $response->serie);
+            $order->update_meta_data('_fel_numero', $response->numero);
             $order->update_meta_data('_fel_issued_at', current_time('mysql'));
             $order->update_meta_data('_fel_status', 'issued');
             $order->save();
 
             $order->add_order_note(
-                sprintf('FEL invoice issued. UUID: %s | Serie: %s | Número: %s', $invoice->getUuid(), $invoice->getSerie(), $invoice->getNumero())
+                sprintf('FEL invoice issued. UUID: %s | Serie: %s | Número: %s', $response->uuid, $response->serie, $response->numero)
             );
         } catch (\Throwable $e) {
             $order->update_meta_data('_fel_status', 'failed');

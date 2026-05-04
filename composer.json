@@ -5,7 +5,8 @@
     "license": "MIT",
     "require": {
         "php": ">=7.4",
-        "rodmarzavala/infile-php-core": "*"
+        "rodmarzavala/infile-php-core": "*",
+        "nyholm/psr7": "^1.8"
     },
     "autoload": {
         "psr-4": {
@@ -21,5 +22,10 @@
         "options": {
             "symlink": false
         }
-    }]
+    }],
+    "config": {
+        "allow-plugins": {
+            "php-http/discovery": true
+        }
+    }
 }

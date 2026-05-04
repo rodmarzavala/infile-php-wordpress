@@ -20,17 +20,20 @@ class InfileService
             return;
         }
 
-        $signUser = get_option('infile_sign_user', '');
-        $signKey  = get_option('infile_sign_key', '');
-        $apiUser  = get_option('infile_api_user', '');
-        $apiKey   = get_option('infile_api_key', '');
-        $nit      = get_option('infile_nit', '');
-        $env      = get_option('infile_environment', 'sandbox');
-        $flow     = get_option('infile_flow', 'unified');
+        $signUser = (string) get_option('infile_sign_user', '');
+        $signKey  = (string) get_option('infile_sign_key', '');
+        $apiUser  = (string) get_option('infile_api_user', '');
+        $apiKey   = (string) get_option('infile_api_key', '');
+        $nit      = (string) get_option('infile_nit', '');
+        $env      = (string) get_option('infile_environment', 'sandbox');
+        $flow     = (string) get_option('infile_flow', 'unified');
 
         if (empty($nit) || empty($apiKey)) {
             return;
         }
+
+        $envEnum = \InfilePhp\Core\Enums\Environment::tryFrom($env) ?? \InfilePhp\Core\Enums\Environment::Sandbox;
+        $flowEnum = \InfilePhp\Core\Enums\Flow::tryFrom($flow) ?? \InfilePhp\Core\Enums\Flow::Unified;
 
         self::$config = new \InfilePhp\Core\FelConfig(
             $nit,
@@ -38,18 +41,20 @@ class InfileService
             $signKey,
             $apiUser,
             $apiKey,
-            \InfilePhp\Core\Enums\Environment::from($env),
-            \InfilePhp\Core\Enums\Flow::from($flow)
+            $envEnum,
+            $flowEnum
         );
 
         $httpClient = new \InfilePhp\WordPress\Http\WpRemoteHttpClient();
-        $psr17Factory = new \InfilePhp\WordPress\Http\Psr7\WpPsr17Factory();
+        $psr17Factory = new \Nyholm\Psr7\Factory\Psr17Factory();
+        $dispatcher = new \InfilePhp\WordPress\Core\WpEventDispatcher();
 
         \InfilePhp\Core\InfilePhp::configure(
             self::$config,
             $httpClient,
             $psr17Factory,
-            $psr17Factory
+            $psr17Factory,
+            $dispatcher
         );
     }
 

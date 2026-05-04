@@ -70,13 +70,18 @@ class SettingsPage
                 <?php wp_nonce_field('infile_php_settings'); ?>
                 <table class="form-table">
                     <?php foreach (self::OPTION_FIELDS as $field => $label): ?>
+                    <?php
+                    $is_secret = in_array($field, array('infile_sign_key', 'infile_api_key'), true);
+                    $input_type = $is_secret ? 'password' : 'text';
+                    ?>
                     <tr>
                         <th><label for="<?php echo esc_attr($field); ?>"><?php echo esc_html($label); ?></label></th>
                         <td>
-                            <input type="text"
+                            <input type="<?php echo esc_attr($input_type); ?>"
                                    name="<?php echo esc_attr($field); ?>"
                                    id="<?php echo esc_attr($field); ?>"
                                    value="<?php echo esc_attr(get_option($field, '')); ?>"
+                                   autocomplete="<?php echo $is_secret ? 'new-password' : 'off'; ?>"
                                    class="regular-text"/>
                         </td>
                     </tr>

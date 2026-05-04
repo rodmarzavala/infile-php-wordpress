@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace InfilePhp\WordPress\Http;
 
-use InfilePhp\WordPress\Http\Psr7\WpResponse;
+use Nyholm\Psr7\Response;
 use Psr\Http\Client\ClientExceptionInterface;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestInterface;
@@ -63,7 +63,7 @@ class WpRemoteHttpClient implements ClientInterface
             }
         }
 
-        return new WpResponse($statusCode, $formattedHeaders, $responseBody);
+        return new Response($statusCode, $formattedHeaders, $responseBody);
     }
 }
 

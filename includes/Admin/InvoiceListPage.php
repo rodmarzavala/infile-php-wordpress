@@ -32,24 +32,18 @@ class InvoiceListPage
             return;
         }
 
-        global $wpdb;
-
-        $orders = $wpdb->get_results(
-            "SELECT p.ID, p.post_date,
-                    pm_uuid.meta_value AS fel_uuid,
-                    pm_serie.meta_value AS fel_serie,
-                    pm_numero.meta_value AS fel_numero,
-                    pm_status.meta_value AS fel_status
-             FROM {$wpdb->posts} p
-             LEFT JOIN {$wpdb->postmeta} pm_uuid   ON pm_uuid.post_id   = p.ID AND pm_uuid.meta_key   = '_fel_uuid'
-             LEFT JOIN {$wpdb->postmeta} pm_serie  ON pm_serie.post_id  = p.ID AND pm_serie.meta_key  = '_fel_serie'
-             LEFT JOIN {$wpdb->postmeta} pm_numero ON pm_numero.post_id = p.ID AND pm_numero.meta_key = '_fel_numero'
-             LEFT JOIN {$wpdb->postmeta} pm_status ON pm_status.post_id = p.ID AND pm_status.meta_key = '_fel_status'
-             WHERE p.post_type = 'shop_order'
-             AND pm_uuid.meta_value IS NOT NULL
-             ORDER BY p.post_date DESC
-             LIMIT 100"
+        $args = array(
+            'limit' => 100,
+            'orderby' => 'date',
+            'order' => 'DESC',
+            'meta_query' => array(
+                array(
+                    'key'     => '_fel_uuid',
+                    'compare' => 'EXISTS',
+                ),
+            ),
         );
+        $orders = wc_get_orders($args);
 
         ?>
         <div class="wrap">
@@ -68,13 +62,13 @@ class InvoiceListPage
                     <?php if (empty($orders)): ?>
                         <tr><td colspan="5">No FEL invoices found.</td></tr>
                     <?php else: ?>
-                        <?php foreach ($orders as $row): ?>
+                        <?php foreach ($orders as $order): ?>
                             <tr>
-                                <td><a href="<?php echo esc_url(get_edit_post_link($row->ID)); ?>">#<?php echo esc_html($row->ID); ?></a></td>
-                                <td><?php echo esc_html($row->post_date); ?></td>
-                                <td><code><?php echo esc_html($row->fel_uuid); ?></code></td>
-                                <td><?php echo esc_html($row->fel_serie . ' / ' . $row->fel_numero); ?></td>
-                                <td><?php echo esc_html($row->fel_status); ?></td>
+                                <td><a href="<?php echo esc_url($order->get_edit_order_url()); ?>">#<?php echo esc_html($order->get_id()); ?></a></td>
+                                <td><?php echo esc_html($order->get_date_created() ? $order->get_date_created()->date('Y-m-d H:i:s') : ''); ?></td>
+                                <td><code><?php echo esc_html($order->get_meta('_fel_uuid')); ?></code></td>
+                                <td><?php echo esc_html($order->get_meta('_fel_serie') . ' / ' . $order->get_meta('_fel_numero')); ?></td>
+                                <td><?php echo esc_html($order->get_meta('_fel_status')); ?></td>
                             </tr>
                         <?php endforeach; ?>
                     <?php endif; ?>

@@ -45,6 +45,7 @@ require_once INFILE_PHP_PLUGIN_DIR . 'includes/Admin/InvoiceListPage.php';
 require_once INFILE_PHP_PLUGIN_DIR . 'includes/WooCommerce/OrderInvoiceHook.php';
 require_once INFILE_PHP_PLUGIN_DIR . 'includes/WooCommerce/InvoiceMetaBox.php';
 require_once INFILE_PHP_PLUGIN_DIR . 'includes/WooCommerce/RefundCreditNote.php';
+require_once INFILE_PHP_PLUGIN_DIR . 'includes/Core/WpEventDispatcher.php';
 
 // Bootstrap
 add_action('plugins_loaded', function () {
@@ -59,6 +60,7 @@ add_action('plugins_loaded', function () {
     InfilePhp\WordPress\Core\InfileService::init();
     InfilePhp\WordPress\Admin\SettingsPage::register();
     InfilePhp\WordPress\Admin\InvoiceListPage::register();
+
     InfilePhp\WordPress\WooCommerce\OrderInvoiceHook::register();
     InfilePhp\WordPress\WooCommerce\InvoiceMetaBox::register();
     InfilePhp\WordPress\WooCommerce\RefundCreditNote::register();
